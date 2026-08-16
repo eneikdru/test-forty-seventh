@@ -1,0 +1,361 @@
+{
+    "epics": [
+        {
+            "existingEpicId": null,
+            "title": "Epidemiological Content Lifecycle and Management",
+            "jtbd": "When an editor works with the system, I want to draft, review, publish, and manage epidemiological materials, so that the knowledge base is accurate and up-to-date.",
+            "kanoClass": "Must-Be",
+            "cynefinDomain": "complicated",
+            "sixSigmaMetric": "Reduce average time to publish a new protocol from days to under 4 hours.",
+            "tocConstraintRef": "Content authoring and approval bottleneck",
+            "sourceIndex": 0,
+            "requirements": [
+                "R1: Editor can draft a new epidemiological material, protocol, or data entry.",
+                "R2: Editor can review and approve drafted content.",
+                "R3: Editor can publish the approved content to the catalog.",
+                "R4: Editor can update or unpublish stale content.",
+                "R5: Owner can view an overview of all cataloged materials to see what the collection holds.",
+                "R6: Owner can identify content that has gone stale or is rarely used."
+            ],
+            "coverageComplete": true,
+            "slices": [
+                {
+                    "title": "Content lifecycle data schema",
+                    "roleTag": "BARCAN-TAG-08",
+                    "jtbd": "When implementing the data model for this epic, I want to define the schema for materials, protocols, and their lifecycle states, so that content can be safely persisted.",
+                    "acceptanceCriteria": "Given an editor saves a draft, When the data is persisted, Then it is stored with a 'draft' status.\nGiven a content item is published, When the record is updated, Then the status changes to 'published' and an audit trail is written.",
+                    "leanValue": "essential",
+                    "cynefinDomain": "clear",
+                    "tocConstraintRef": "Database schema evolution",
+                    "sixSigmaMetric": "Reduce schema validation errors to 0 per deployment.",
+                    "hasUi": false,
+                    "requirementRefs": [
+                        "R1",
+                        "R2",
+                        "R3",
+                        "R4",
+                        "R5",
+                        "R6"
+                    ]
+                },
+                {
+                    "title": "Content management API contract",
+                    "roleTag": "BARCAN-TAG-12",
+                    "jtbd": "When implementing the API contract for this epic, I want to define endpoints for drafting, publishing, and listing content, so that backend and frontend can be built in parallel.",
+                    "acceptanceCriteria": "Given a frontend developer needs to create a draft, When they read the OpenAPI spec, Then they find a clearly defined POST /api/content endpoint.\nGiven the need to fetch catalog statistics, When the owner dashboard is built, Then a GET /api/content/stats endpoint is documented.",
+                    "leanValue": "essential",
+                    "cynefinDomain": "clear",
+                    "tocConstraintRef": "Frontend-backend integration block",
+                    "sixSigmaMetric": "0 breaking changes in the API contract during implementation.",
+                    "hasUi": false,
+                    "requirementRefs": [
+                        "R1",
+                        "R2",
+                        "R3",
+                        "R4",
+                        "R5",
+                        "R6"
+                    ]
+                },
+                {
+                    "title": "Content management backend logic",
+                    "roleTag": "BARCAN-TAG-02",
+                    "jtbd": "When implementing the backend logic for this epic, I want to build the API endpoints for the content lifecycle, so that editors can manage materials and owners can view stats.",
+                    "acceptanceCriteria": "Given a valid draft payload, When sent to POST /api/content, Then the backend persists it and returns 201.\nGiven a request to publish, When the status is updated, Then the backend transitions it safely and handles invalid state transitions with a 400.",
+                    "leanValue": "essential",
+                    "cynefinDomain": "complicated",
+                    "tocConstraintRef": "Backend business logic execution",
+                    "sixSigmaMetric": "API response time for content operations under 200ms.",
+                    "hasUi": false,
+                    "requirementRefs": [
+                        "R1",
+                        "R2",
+                        "R3",
+                        "R4",
+                        "R5",
+                        "R6"
+                    ]
+                },
+                {
+                    "title": "Content drafting and publishing UI",
+                    "roleTag": "BARCAN-TAG-11",
+                    "jtbd": "When implementing the editor UI for this epic, I want to build forms for drafting, editing, and publishing content, so that editors can manage knowledge intuitively.",
+                    "acceptanceCriteria": "Given an editor is creating a protocol, When they enter data, Then what they typed survives page reloads or failed submits.\nGiven an editor clicks publish, When the action is destructive/expensive, Then they are prompted for confirmation.\nGiven a user relies on a keyboard navigation, When they use the form, Then it meets WCAG 2.1 AA requirements with visible focus on all controls.",
+                    "leanValue": "essential",
+                    "cynefinDomain": "complicated",
+                    "tocConstraintRef": "Editor form usability",
+                    "sixSigmaMetric": "Reduce editor data loss incidents to 0.",
+                    "hasUi": true,
+                    "requirementRefs": [
+                        "R1",
+                        "R2",
+                        "R3",
+                        "R4"
+                    ]
+                },
+                {
+                    "title": "Owner collection overview UI",
+                    "roleTag": "BARCAN-TAG-11",
+                    "jtbd": "When implementing the dashboard for this epic, I want to display the collection overview and stale content warnings, so that owners can maintain catalog health.",
+                    "acceptanceCriteria": "Given the owner opens the dashboard, When the page loads, Then they see the total number of materials and a list of stale items.\nGiven the owner views the interface on a mobile device, When they navigate the dashboard, Then the layout is fully responsive and usable.\nGiven a keyboard user navigates the dashboard, When they tab through items, Then all interactive elements have visible focus.",
+                    "leanValue": "valuable",
+                    "cynefinDomain": "clear",
+                    "tocConstraintRef": "Catalog visibility",
+                    "sixSigmaMetric": "Dashboard render time under 1 second.",
+                    "hasUi": true,
+                    "requirementRefs": [
+                        "R5",
+                        "R6"
+                    ]
+                },
+                {
+                    "title": "Content lifecycle QA",
+                    "roleTag": "BARCAN-TAG-06",
+                    "jtbd": "When implementing QA for this epic, I want to write unit, integration, and E2E tests for the publishing flow, so that regressions are prevented.",
+                    "acceptanceCriteria": "Given the core business logic for publishing, When tested, Then unit tests cover all valid and invalid state transitions.\nGiven the API endpoints, When tested, Then integration tests verify accurate database persistence.\nGiven a full user journey, When the E2E test runs, Then it successfully drafts, publishes, and unpublishes a material via the UI.",
+                    "leanValue": "essential",
+                    "cynefinDomain": "clear",
+                    "tocConstraintRef": "Manual regression testing overhead",
+                    "sixSigmaMetric": "Achieve 90% test coverage on content management logic.",
+                    "hasUi": false,
+                    "requirementRefs": [
+                        "R1",
+                        "R2",
+                        "R3",
+                        "R4",
+                        "R5",
+                        "R6"
+                    ]
+                }
+            ]
+        },
+        {
+            "existingEpicId": null,
+            "title": "Epidemiological Knowledge Discovery",
+            "jtbd": "When a user accesses the system, I want to search and retrieve epidemiological materials and protocols, so that I can apply the correct procedures in my work.",
+            "kanoClass": "Must-Be",
+            "cynefinDomain": "complicated",
+            "sixSigmaMetric": "Increase successful search rate to >95%.",
+            "tocConstraintRef": "Knowledge retrieval latency",
+            "sourceIndex": 0,
+            "requirements": [
+                "R1: User can search for published epidemiological materials by keyword.",
+                "R2: User can filter search results by content type (protocol, data, material).",
+                "R3: User can view the full details and read the selected material.",
+                "R4: If a search yields no results, the user receives clear feedback and alternative suggestions."
+            ],
+            "coverageComplete": true,
+            "slices": [
+                {
+                    "title": "Search and retrieval API contract",
+                    "roleTag": "BARCAN-TAG-12",
+                    "jtbd": "When implementing the API contract for this epic, I want to define the search and material retrieval endpoints, so that backend and frontend sync perfectly.",
+                    "acceptanceCriteria": "Given a frontend dev needs to implement search, When checking the spec, Then they find GET /api/search with keyword and type filters.\nGiven the need to read a material, When checking the spec, Then GET /api/materials/{id} is clearly documented.",
+                    "leanValue": "essential",
+                    "cynefinDomain": "clear",
+                    "tocConstraintRef": "API sync block",
+                    "sixSigmaMetric": "0 contract drift issues during integration.",
+                    "hasUi": false,
+                    "requirementRefs": [
+                        "R1",
+                        "R2",
+                        "R3",
+                        "R4"
+                    ]
+                },
+                {
+                    "title": "Search logic and material retrieval backend",
+                    "roleTag": "BARCAN-TAG-02",
+                    "jtbd": "When implementing the backend for this epic, I want to build fast search capabilities and document retrieval, so that users get relevant results immediately.",
+                    "acceptanceCriteria": "Given a search query with valid keywords, When processed, Then relevant published materials are returned.\nGiven a request for an unpublished material by a regular user, When queried, Then a 404 or 403 is returned.",
+                    "leanValue": "essential",
+                    "cynefinDomain": "complicated",
+                    "tocConstraintRef": "Search query performance",
+                    "sixSigmaMetric": "Search endpoint p95 latency under 150ms.",
+                    "hasUi": false,
+                    "requirementRefs": [
+                        "R1",
+                        "R2",
+                        "R3",
+                        "R4"
+                    ]
+                },
+                {
+                    "title": "Search interface and document viewer",
+                    "roleTag": "BARCAN-TAG-11",
+                    "jtbd": "When implementing the discovery UI for this epic, I want to build the search bar, filter controls, and document reader, so that users can easily consume knowledge.",
+                    "acceptanceCriteria": "Given a user searches for a term on a mobile phone, When the results appear, Then the interface is fully usable and responsive.\nGiven a search yields zero results, When the page updates, Then the user sees explicit feedback and suggestions to adjust filters.\nGiven a user relies on a keyboard, When navigating the search results, Then focus states are clearly visible per WCAG 2.1 AA.",
+                    "leanValue": "essential",
+                    "cynefinDomain": "complicated",
+                    "tocConstraintRef": "User discovery friction",
+                    "sixSigmaMetric": "Zero unhandled UI exceptions during search operations.",
+                    "hasUi": true,
+                    "requirementRefs": [
+                        "R1",
+                        "R2",
+                        "R3",
+                        "R4"
+                    ]
+                },
+                {
+                    "title": "Discovery and search QA",
+                    "roleTag": "BARCAN-TAG-06",
+                    "jtbd": "When implementing QA for this epic, I want to test the search accuracy and viewer reliability, so that users always find the right documents.",
+                    "acceptanceCriteria": "Given the search logic, When tested via unit tests, Then filters are correctly applied to the query.\nGiven the API, When integration tested, Then results match the database state.\nGiven the UI, When E2E tested, Then a full search-to-read journey completes successfully across desktop and mobile viewports.",
+                    "leanValue": "essential",
+                    "cynefinDomain": "clear",
+                    "tocConstraintRef": "Regression bugs in search",
+                    "sixSigmaMetric": "Maintain 90% test coverage on search paths.",
+                    "hasUi": false,
+                    "requirementRefs": [
+                        "R1",
+                        "R2",
+                        "R3",
+                        "R4"
+                    ]
+                }
+            ]
+        },
+        {
+            "existingEpicId": null,
+            "title": "Knowledge Base Telemetry and Measurement",
+            "jtbd": "When evaluating system performance, I want to measure search success and content freshness, so that we know if the product achieves its goal of improving epidemiological knowledge access.",
+            "kanoClass": "Must-Be",
+            "cynefinDomain": "clear",
+            "sixSigmaMetric": "Capture 100% of GQM metrics with no missing data points.",
+            "tocConstraintRef": "Lack of product success visibility",
+            "sourceIndex": 0,
+            "requirements": [
+                "R1: System tracks the success rate of user searches to answer 'Are users finding the protocols they need?'.",
+                "R2: System tracks the volume of stale versus active content to answer 'Are editors keeping the catalog up-to-date?'."
+            ],
+            "coverageComplete": true,
+            "slices": [
+                {
+                    "title": "GQM backend metrics collection and validation",
+                    "roleTag": "BARCAN-TAG-02",
+                    "jtbd": "When implementing telemetry for this epic, I want to record search events and catalog freshness metrics, so that product outcomes are measurable without a separate QA slice.",
+                    "acceptanceCriteria": "Given a search is performed, When the result is returned, Then a metric is recorded indicating success or failure.\nGiven a daily cron job runs, When it completes, Then it records the ratio of stale to active documents.\nGiven the test suite runs, When it verifies metrics, Then integration tests confirm correct telemetry payloads are generated.",
+                    "leanValue": "essential",
+                    "cynefinDomain": "clear",
+                    "tocConstraintRef": "Telemetry data capture",
+                    "sixSigmaMetric": "Telemetry events are recorded with <5ms overhead.",
+                    "hasUi": false,
+                    "requirementRefs": [
+                        "R1",
+                        "R2"
+                    ]
+                }
+            ]
+        },
+        {
+            "existingEpicId": null,
+            "title": "Initial Epidemiological Content Seeding",
+            "jtbd": "When the system is deployed, I want it pre-populated with real epidemiological data, so that it can be demonstrated to the client and exercised fully.",
+            "kanoClass": "Must-Be",
+            "cynefinDomain": "clear",
+            "sixSigmaMetric": "100% of core catalog paths are walkable using the initial dataset.",
+            "tocConstraintRef": "Empty state demonstration block",
+            "sourceIndex": 0,
+            "requirements": [
+                "R1: The database contains a representative set of realistic Russian epidemiological materials, protocols, and data to exercise all cataloging and search paths."
+            ],
+            "coverageComplete": true,
+            "slices": [
+                {
+                    "title": "Epidemiological initial content creation",
+                    "roleTag": "BARCAN-TAG-08",
+                    "jtbd": "When seeding data for this epic, I want to insert realistic materials into the database, so that the knowledge base is demonstrable from day one without needing a separate QA slice.",
+                    "acceptanceCriteria": "Given an empty database, When the seed script runs, Then it inserts valid Russian-language epidemiological protocols and datasets.\nGiven the test suite runs, When it checks the database state, Then it verifies all required seed items exist and are well-formed.",
+                    "leanValue": "essential",
+                    "cynefinDomain": "clear",
+                    "tocConstraintRef": "Manual test data entry",
+                    "sixSigmaMetric": "Seed script executes in under 5 seconds.",
+                    "hasUi": false,
+                    "requirementRefs": [
+                        "R1"
+                    ]
+                }
+            ]
+        },
+        {
+            "existingEpicId": null,
+            "title": "Knowledge Base Data Backup and Restore",
+            "jtbd": "When a critical failure occurs, I want to restore the epidemiological database from a verified backup, so that the client's knowledge is not permanently lost.",
+            "kanoClass": "Must-Be",
+            "cynefinDomain": "clear",
+            "sixSigmaMetric": "Mean Time to Recovery (MTTR) under 15 minutes.",
+            "tocConstraintRef": "Data loss recovery block",
+            "sourceIndex": 0,
+            "requirements": [
+                "R1: System performs regular automated backups of the epidemiological data.",
+                "R2: A restore operation is actually performed and verified in a test environment, not merely configured."
+            ],
+            "coverageComplete": true,
+            "slices": [
+                {
+                    "title": "Automated backup and restore verification",
+                    "roleTag": "BARCAN-TAG-05",
+                    "jtbd": "When configuring infrastructure for this epic, I want to set up automated backups and a tested restore script, so that data loss is prevented without needing a separate QA slice.",
+                    "acceptanceCriteria": "Given the database is running, When the backup schedule triggers, Then an encrypted snapshot is saved to secure storage.\nGiven a snapshot exists, When the restore script is invoked in a clean environment, Then the database is fully recovered and automated data integrity tests pass.",
+                    "leanValue": "essential",
+                    "cynefinDomain": "clear",
+                    "tocConstraintRef": "Infrastructure recovery reliability",
+                    "sixSigmaMetric": "100% success rate on automated weekly restore tests.",
+                    "hasUi": false,
+                    "requirementRefs": [
+                        "R1",
+                        "R2"
+                    ]
+                }
+            ]
+        },
+        {
+            "existingEpicId": null,
+            "title": "Editor Account Recovery",
+            "jtbd": "When an editor is locked out of their account, I want a self-service recovery path, so that I can regain access without blocking my work.",
+            "kanoClass": "Must-Be",
+            "cynefinDomain": "clear",
+            "sixSigmaMetric": "Reduce account recovery support tickets to zero.",
+            "tocConstraintRef": "Support bottleneck for locked accounts",
+            "sourceIndex": 0,
+            "requirements": [
+                "R1: Editor can request a password reset link via email.",
+                "R2: Editor can securely set a new password and regain access."
+            ],
+            "coverageComplete": true,
+            "slices": [
+                {
+                    "title": "Account recovery backend flow",
+                    "roleTag": "BARCAN-TAG-07",
+                    "jtbd": "When implementing security for this epic, I want to build a secure password reset token mechanism, so that accounts can be recovered safely without a separate QA slice.",
+                    "acceptanceCriteria": "Given an editor requests a reset, When the email is valid, Then a secure, short-lived token is generated and emailed.\nGiven a valid token is provided with a new password, When submitted, Then the password is updated and the token is invalidated.\nGiven a test suite runs, When recovery is tested, Then unit and integration tests verify token lifecycle securely.",
+                    "leanValue": "essential",
+                    "cynefinDomain": "clear",
+                    "tocConstraintRef": "Authentication flow security",
+                    "sixSigmaMetric": "0 security vulnerabilities found in reset token logic.",
+                    "hasUi": false,
+                    "requirementRefs": [
+                        "R1",
+                        "R2"
+                    ]
+                },
+                {
+                    "title": "Account recovery user interface",
+                    "roleTag": "BARCAN-TAG-11",
+                    "jtbd": "When implementing the recovery UI for this epic, I want to provide forms for reset request and password update, so that users can complete the recovery process.",
+                    "acceptanceCriteria": "Given the user is on the login screen, When they click 'Forgot password', Then they are presented with an email input form.\nGiven the user clicks the reset link in their email, When the form loads, Then they can securely type a new password and receive visual feedback on success.",
+                    "leanValue": "essential",
+                    "cynefinDomain": "clear",
+                    "tocConstraintRef": "User recovery friction",
+                    "sixSigmaMetric": "Reduce user drop-off in recovery flow to <5%.",
+                    "hasUi": true,
+                    "requirementRefs": [
+                        "R1",
+                        "R2"
+                    ]
+                }
+            ]
+        }
+    ]
+}
