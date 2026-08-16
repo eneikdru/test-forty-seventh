@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: theme('colors.surface');
+  color: theme('colors.on-surface');
+  -webkit-font-smoothing: antialiased;
+  min-height: max(884px, 100dvh);
+}
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
