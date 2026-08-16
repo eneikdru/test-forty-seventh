@@ -1,0 +1,595 @@
+{
+  "epics": [
+    {
+      "existingEpicId": "10dd020f-d974-409b-b3bc-90d6d004412c",
+      "sourceIndex": 0,
+      "requirements": [
+        "R1: Editor can draft a new epidemiological material or protocol",
+        "R2: Editor can edit an existing draft without losing typed data on failure",
+        "R3: Editor can submit a draft for review and have it approved",
+        "R4: Editor can publish an approved material to the catalog",
+        "R5: Editor and Collection Owner can learn when published material has gone stale",
+        "R6: Editor can update or unpublish stale material, with explicit confirmation before unpublishing"
+      ],
+      "coverageComplete": true,
+      "slices": [
+        {
+          "title": "Define epidemiological material schema",
+          "roleTag": "BARCAN-TAG-08",
+          "jtbd": "When implementing the data model for this epic, I want to define the schema for materials and lifecycle states, so that the knowledge base can store and transition content correctly.",
+          "acceptanceCriteria": "Given a new material draft, When it is saved, Then the database records it with a draft state.\nGiven a stale material, When it is queried, Then the schema correctly identifies its stale status based on the expiration timestamp.",
+          "leanValue": "essential",
+          "cynefinDomain": "clear",
+          "tocConstraintRef": "Material data structure rigidity",
+          "sixSigmaMetric": "Achieve 0 schema migration failures during deployment",
+          "hasUi": false,
+          "requirementRefs": [
+            "R1",
+            "R2",
+            "R3",
+            "R4",
+            "R5",
+            "R6"
+          ]
+        },
+        {
+          "title": "Define API contract for material lifecycle",
+          "roleTag": "BARCAN-TAG-12",
+          "jtbd": "When implementing the API contract for this epic, I want to specify the endpoints and DTOs for material management, so that frontend and backend can be built in parallel.",
+          "acceptanceCriteria": "Given the API specification, When frontend and backend developers reference it, Then there is zero ambiguity regarding request/response payloads.\nGiven a material state transition, When documented in the contract, Then it includes explicit error structures.",
+          "leanValue": "essential",
+          "cynefinDomain": "clear",
+          "tocConstraintRef": "Frontend-backend integration block",
+          "sixSigmaMetric": "Achieve 0 breaking changes to the contract during parallel implementation",
+          "hasUi": false,
+          "requirementRefs": [
+            "R1",
+            "R2",
+            "R3",
+            "R4",
+            "R5",
+            "R6"
+          ]
+        },
+        {
+          "title": "Implement material lifecycle API backend",
+          "roleTag": "BARCAN-TAG-02",
+          "jtbd": "When implementing the backend endpoints for this epic, I want to enforce the material state machine, so that the knowledge base lifecycle is robust and secure.",
+          "acceptanceCriteria": "Given a valid draft submission, When the endpoint is called, Then the state transitions to 'in review'.\nGiven an unauthorized publish attempt, When the API is invoked, Then it returns a 403 Forbidden.",
+          "leanValue": "essential",
+          "cynefinDomain": "complicated",
+          "tocConstraintRef": "Backend logic execution speed",
+          "sixSigmaMetric": "Process 99% of state transition API calls in under 200ms",
+          "hasUi": false,
+          "requirementRefs": [
+            "R1",
+            "R2",
+            "R3",
+            "R4",
+            "R5",
+            "R6"
+          ]
+        },
+        {
+          "title": "Implement editor UI for material management",
+          "roleTag": "BARCAN-TAG-11",
+          "jtbd": "When implementing the editor UI for this epic, I want to build accessible interfaces with visible feedback, so that editors can manage epidemiological content efficiently.",
+          "acceptanceCriteria": "Given an editor is typing a draft, When network connectivity drops, Then the entered text survives locally.\nGiven an editor clicks to unpublish, When triggered, Then a visible confirmation dialogue appears before executing the destructive action.\nGiven the editor interface, When navigated with a keyboard, Then all form controls have visible focus and 4.5:1 text contrast.\nGiven the editor interface, When accessed on a mobile phone viewport, Then the layout is fully responsive and usable.",
+          "leanValue": "essential",
+          "cynefinDomain": "complicated",
+          "tocConstraintRef": "Editor UI interaction friction",
+          "sixSigmaMetric": "Ensure 0 WCAG 2.1 AA violations in automated UI accessibility audits",
+          "hasUi": true,
+          "requirementRefs": [
+            "R1",
+            "R2",
+            "R3",
+            "R4",
+            "R5",
+            "R6"
+          ]
+        },
+        {
+          "title": "Verify epidemiological material lifecycle",
+          "roleTag": "BARCAN-TAG-06",
+          "jtbd": "When verifying the lifecycle implementation for this epic, I want to test the entire flow across all test layers, so that the knowledge base remains accurate and regression-free.",
+          "acceptanceCriteria": "Given the full material lifecycle flow, When an E2E test runs, Then it successfully drafts, reviews, publishes, and unpublishes a material.\nGiven the API layer, When integration tests run, Then all state transition constraints are validated.",
+          "leanValue": "essential",
+          "cynefinDomain": "clear",
+          "tocConstraintRef": "Defect escape rate",
+          "sixSigmaMetric": "Achieve 100% test automation coverage for all core material state transitions",
+          "hasUi": false,
+          "requirementRefs": [
+            "R1",
+            "R2",
+            "R3",
+            "R4",
+            "R5",
+            "R6"
+          ]
+        }
+      ]
+    },
+    {
+      "existingEpicId": null,
+      "title": "Content Discovery and Access",
+      "jtbd": "When a reader or researcher accesses the system, I want to search and view epidemiological materials, so that I can utilize the knowledge base effectively.",
+      "kanoClass": "Must-Be",
+      "cynefinDomain": "clear",
+      "sixSigmaMetric": "Achieve 99% success rate for reader search queries returning relevant materials within 500ms",
+      "tocConstraintRef": "Reader document access time",
+      "sourceIndex": 0,
+      "requirements": [
+        "R1: Reader can browse the catalog of available published materials",
+        "R2: Reader can search for specific protocols or data using keywords",
+        "R3: Reader can view the full content of a selected material",
+        "R4: Reader receives clear visible feedback if a search yields no results",
+        "R5: Owner of the collection can see what the collection holds and what is actually used"
+      ],
+      "coverageComplete": true,
+      "slices": [
+        {
+          "title": "Define search and analytics schema",
+          "roleTag": "BARCAN-TAG-08",
+          "jtbd": "When implementing the search indices for this epic, I want to define the optimized data structures, so that retrieval and analytics queries are performant.",
+          "acceptanceCriteria": "Given a full-text search requirement, When the index schema is defined, Then it supports keyword matching across material titles and bodies.\nGiven analytics tracking, When the schema is structured, Then it accurately stores view events per material.",
+          "leanValue": "essential",
+          "cynefinDomain": "clear",
+          "tocConstraintRef": "Database query performance",
+          "sixSigmaMetric": "Ensure 99% of search index updates complete in under 50ms",
+          "hasUi": false,
+          "requirementRefs": [
+            "R1",
+            "R2",
+            "R3",
+            "R5"
+          ]
+        },
+        {
+          "title": "Define API contract for search and access",
+          "roleTag": "BARCAN-TAG-12",
+          "jtbd": "When implementing the API contract for this epic, I want to specify the search and view endpoints, so that frontend and backend parallel development is unblocked.",
+          "acceptanceCriteria": "Given a search request, When defined in the contract, Then it includes pagination and keyword parameters.\nGiven a view action, When documented, Then it specifies the exact material payload structure.",
+          "leanValue": "essential",
+          "cynefinDomain": "clear",
+          "tocConstraintRef": "API contract divergence",
+          "sixSigmaMetric": "Achieve 0 schema mismatch errors during client-server integration",
+          "hasUi": false,
+          "requirementRefs": [
+            "R1",
+            "R2",
+            "R3",
+            "R4",
+            "R5"
+          ]
+        },
+        {
+          "title": "Implement search and retrieval backend",
+          "roleTag": "BARCAN-TAG-02",
+          "jtbd": "When implementing the search backend for this epic, I want to build fast retrieval logic, so that users experience minimal latency when querying the knowledge base.",
+          "acceptanceCriteria": "Given a search query with keywords, When processed, Then it returns a paginated list of matching published materials.\nGiven a request for material details, When invoked, Then it records a view event and returns the content.",
+          "leanValue": "essential",
+          "cynefinDomain": "complicated",
+          "tocConstraintRef": "Search processing throughput",
+          "sixSigmaMetric": "Maintain p95 search response time below 300ms",
+          "hasUi": false,
+          "requirementRefs": [
+            "R1",
+            "R2",
+            "R3",
+            "R5"
+          ]
+        },
+        {
+          "title": "Implement frontend for search and discovery",
+          "roleTag": "BARCAN-TAG-11",
+          "jtbd": "When implementing the search UI for this epic, I want to provide responsive feedback and accessible navigation, so that readers can effortlessly browse the catalog.",
+          "acceptanceCriteria": "Given a search yielding no matches, When the results render, Then the user sees a clear, visible message indicating no results.\nGiven a user exploring the catalog, When navigated via keyboard, Then focus is clearly visible and contrast meets WCAG 2.1 AA standards.\nGiven the owner dashboard, When accessed, Then it displays the catalog overview and usage statistics.\nGiven the search UI, When loaded on a mobile device, Then it is fully usable and responsive.",
+          "leanValue": "essential",
+          "cynefinDomain": "complicated",
+          "tocConstraintRef": "UI rendering efficiency",
+          "sixSigmaMetric": "Achieve a First Contentful Paint (FCP) of under 1.5 seconds for catalog pages",
+          "hasUi": true,
+          "requirementRefs": [
+            "R1",
+            "R2",
+            "R3",
+            "R4",
+            "R5"
+          ]
+        },
+        {
+          "title": "Verify search and access flow",
+          "roleTag": "BARCAN-TAG-06",
+          "jtbd": "When verifying the discovery workflow for this epic, I want to assert E2E functionality, so that researchers reliably find what they need.",
+          "acceptanceCriteria": "Given a populated catalog, When an E2E test searches for a known material, Then the material is found and can be viewed.\nGiven an empty search result, When tested, Then the explicit 'no results' feedback is verified.",
+          "leanValue": "essential",
+          "cynefinDomain": "clear",
+          "tocConstraintRef": "Search logic correctness",
+          "sixSigmaMetric": "Achieve 100% passing E2E tests for the core search-and-read journey",
+          "hasUi": false,
+          "requirementRefs": [
+            "R1",
+            "R2",
+            "R3",
+            "R4",
+            "R5"
+          ]
+        }
+      ]
+    },
+    {
+      "existingEpicId": null,
+      "title": "System Data Protection and Recovery",
+      "jtbd": "When a critical failure occurs, I want to restore the knowledge base from a verified backup, so that epidemiological data is protected from permanent loss.",
+      "kanoClass": "Must-Be",
+      "cynefinDomain": "complicated",
+      "sixSigmaMetric": "Ensure Mean Time to Recovery (MTTR) is under 2 hours with 100% data integrity",
+      "tocConstraintRef": "Data resilience and recovery",
+      "sourceIndex": 0,
+      "requirements": [
+        "R1: The system performs automated daily backups of all knowledge base data",
+        "R2: A tested and verified procedure exists to restore the system from a backup",
+        "R3: The system alerts administrators on backup failure"
+      ],
+      "coverageComplete": true,
+      "slices": [
+        {
+          "title": "Implement automated backups and alert system",
+          "roleTag": "BARCAN-TAG-05",
+          "jtbd": "When implementing the backup infrastructure for this epic, I want to script automated dumps and alerts, so that data loss risks are proactively managed.",
+          "acceptanceCriteria": "Given the backup schedule, When triggered, Then a full database and file snapshot is securely stored.\nGiven a failed backup job, When it terminates with an error, Then an alert is dispatched to administrators.",
+          "leanValue": "essential",
+          "cynefinDomain": "complicated",
+          "tocConstraintRef": "Backup execution reliability",
+          "sixSigmaMetric": "Ensure 100% success rate for daily automated backup runs over a 30-day window",
+          "hasUi": false,
+          "requirementRefs": [
+            "R1",
+            "R3"
+          ]
+        },
+        {
+          "title": "Verify data restore procedure",
+          "roleTag": "BARCAN-TAG-06",
+          "jtbd": "When verifying the data protection for this epic, I want to perform an actual restore, so that the backup is proven to be viable.",
+          "acceptanceCriteria": "Given a recent system backup, When the restore procedure is executed in a staging environment, Then the system recovers to the exact state of the snapshot without data corruption.\nGiven the restored system, When verified, Then all previously published materials remain fully accessible.",
+          "leanValue": "essential",
+          "cynefinDomain": "clear",
+          "tocConstraintRef": "Restore procedure validity",
+          "sixSigmaMetric": "Achieve 0 manual steps required beyond the documented restore script",
+          "hasUi": false,
+          "requirementRefs": [
+            "R2"
+          ]
+        }
+      ]
+    },
+    {
+      "existingEpicId": null,
+      "title": "Editor Account Recovery",
+      "jtbd": "When I forget my password, I want to use a self-service recovery flow, so that I can regain access to my editor account.",
+      "kanoClass": "Must-Be",
+      "cynefinDomain": "clear",
+      "sixSigmaMetric": "Process 100% of password reset requests autonomously without support intervention",
+      "tocConstraintRef": "Account access support load",
+      "sourceIndex": 0,
+      "requirements": [
+        "R1: Editor can request a password reset link to their registered email",
+        "R2: Editor can securely set a new password using the time-limited link"
+      ],
+      "coverageComplete": true,
+      "slices": [
+        {
+          "title": "Define account recovery data schema",
+          "roleTag": "BARCAN-TAG-08",
+          "jtbd": "When implementing the recovery schema for this epic, I want to model time-limited tokens, so that password resets are secure and temporary.",
+          "acceptanceCriteria": "Given a password reset request, When stored, Then the token record includes a clear expiration timestamp.\nGiven an applied token, When used, Then the schema marks it as consumed or deletes it.",
+          "leanValue": "essential",
+          "cynefinDomain": "clear",
+          "tocConstraintRef": "Token state persistence",
+          "sixSigmaMetric": "Ensure 0 tokens remain active past their configured expiration window",
+          "hasUi": false,
+          "requirementRefs": [
+            "R1",
+            "R2"
+          ]
+        },
+        {
+          "title": "Define API contract for account recovery",
+          "roleTag": "BARCAN-TAG-12",
+          "jtbd": "When implementing the API contract for this epic, I want to define reset endpoints, so that the frontend can correctly submit requests and new passwords.",
+          "acceptanceCriteria": "Given a reset request, When documented, Then it requires an email payload.\nGiven a password change action, When documented, Then it requires the token and the new password.",
+          "leanValue": "essential",
+          "cynefinDomain": "clear",
+          "tocConstraintRef": "Recovery API synchronization",
+          "sixSigmaMetric": "Achieve 0 breaking changes to the recovery endpoints during parallel implementation",
+          "hasUi": false,
+          "requirementRefs": [
+            "R1",
+            "R2"
+          ]
+        },
+        {
+          "title": "Implement account recovery backend logic",
+          "roleTag": "BARCAN-TAG-02",
+          "jtbd": "When implementing the recovery backend for this epic, I want to process token generation and validation, so that accounts can be securely restored.",
+          "acceptanceCriteria": "Given a valid email, When a reset is requested, Then a secure token is generated and an email dispatch is triggered.\nGiven an expired token, When submitted with a new password, Then the system rejects the request with a 400 error.",
+          "leanValue": "essential",
+          "cynefinDomain": "complicated",
+          "tocConstraintRef": "Secure token generation and validation",
+          "sixSigmaMetric": "Maintain 0 security vulnerabilities in token generation as verified by static analysis",
+          "hasUi": false,
+          "requirementRefs": [
+            "R1",
+            "R2"
+          ]
+        },
+        {
+          "title": "Implement account recovery UI",
+          "roleTag": "BARCAN-TAG-11",
+          "jtbd": "When implementing the recovery frontend for this epic, I want to provide a clear interface for requesting and setting passwords, so that editors can easily self-serve.",
+          "acceptanceCriteria": "Given a reset form, When submitted, Then visible feedback indicates the email was sent (or handled securely if not found).\nGiven the new password form, When navigating with a keyboard, Then it fully complies with WCAG 2.1 AA standards for focus and contrast.\nGiven the recovery form, When accessed on a mobile phone, Then it scales and remains usable without horizontal scrolling.",
+          "leanValue": "essential",
+          "cynefinDomain": "clear",
+          "tocConstraintRef": "User recovery friction",
+          "sixSigmaMetric": "Ensure 100% of validation errors provide actionable, visible feedback to the user",
+          "hasUi": true,
+          "requirementRefs": [
+            "R1",
+            "R2"
+          ]
+        },
+        {
+          "title": "Verify account recovery flow",
+          "roleTag": "BARCAN-TAG-06",
+          "jtbd": "When verifying the account recovery for this epic, I want to test the full lifecycle of a reset token, so that we guarantee the security and reliability of the process.",
+          "acceptanceCriteria": "Given a test account, When an E2E test runs the recovery flow, Then a token is generated, applied, and the account is successfully accessed with the new password.\nGiven the API layer, When tested with an invalid token, Then the request is correctly rejected.",
+          "leanValue": "essential",
+          "cynefinDomain": "clear",
+          "tocConstraintRef": "Authentication flaw prevention",
+          "sixSigmaMetric": "Achieve 100% automated test coverage for positive and negative token validation scenarios",
+          "hasUi": false,
+          "requirementRefs": [
+            "R1",
+            "R2"
+          ]
+        }
+      ]
+    },
+    {
+      "existingEpicId": null,
+      "title": "Knowledge Base Value Measurement",
+      "jtbd": "When assessing the product's impact, I want to measure the goal-question-metric indicators, so that I know whether the system successfully centralizes and accelerates access to epidemiological data.",
+      "kanoClass": "Must-Be",
+      "cynefinDomain": "complicated",
+      "sixSigmaMetric": "Capture 100% of GQM metrics for reader engagement and editor responsiveness",
+      "tocConstraintRef": "Business value validation",
+      "sourceIndex": 0,
+      "requirements": [
+        "R1: Goal: Accelerate access to epidemiological materials and ensure catalog freshness",
+        "R2: Question 1: Are readers finding what they need? (Metric: Search-to-read conversion rate)",
+        "R3: Question 2: Is the catalog kept up-to-date? (Metric: Average time to update stale content)",
+        "R4: The system tracks and exposes these specific metrics without capturing unneeded events"
+      ],
+      "coverageComplete": true,
+      "slices": [
+        {
+          "title": "Implement value measurement tracking backend",
+          "roleTag": "BARCAN-TAG-02",
+          "jtbd": "When implementing the metrics backend for this epic, I want to aggregate conversion and staleness data, so that the GQM indicators are accurately calculated.",
+          "acceptanceCriteria": "Given recorded search and view events, When the metric is calculated, Then the search-to-read conversion rate is correctly yielded.\nGiven the material lifecycle logs, When queried, Then the average time from stale-to-update is correctly derived.",
+          "leanValue": "essential",
+          "cynefinDomain": "complicated",
+          "tocConstraintRef": "Metrics computation efficiency",
+          "sixSigmaMetric": "Ensure metric aggregations execute in under 1 second for standard reporting windows",
+          "hasUi": false,
+          "requirementRefs": [
+            "R1",
+            "R2",
+            "R3",
+            "R4"
+          ]
+        },
+        {
+          "title": "Verify GQM metrics accuracy",
+          "roleTag": "BARCAN-TAG-06",
+          "jtbd": "When verifying the metrics implementation for this epic, I want to simulate usage and assert output, so that the business value dashboard is trustworthy.",
+          "acceptanceCriteria": "Given a simulated set of user search and view interactions, When the backend calculates the conversion rate, Then the output perfectly matches the expected mathematical result.\nGiven a simulated set of material staleness transitions, When evaluated, Then the average update time is strictly correct.",
+          "leanValue": "essential",
+          "cynefinDomain": "clear",
+          "tocConstraintRef": "Metrics fidelity",
+          "sixSigmaMetric": "Achieve 0 discrepancies between raw event data and calculated GQM outputs in test suites",
+          "hasUi": false,
+          "requirementRefs": [
+            "R1",
+            "R2",
+            "R3",
+            "R4"
+          ]
+        }
+      ]
+    },
+    {
+      "existingEpicId": null,
+      "title": "Analytics Consent Management",
+      "jtbd": "When I first visit the web system, I want to manage my tracking preferences, so that my personal data is only collected with my explicit consent.",
+      "kanoClass": "Must-Be",
+      "cynefinDomain": "clear",
+      "sixSigmaMetric": "Achieve 0% non-essential cookie load prior to explicit user opt-in",
+      "tocConstraintRef": "Privacy regulation compliance",
+      "sourceIndex": 0,
+      "requirements": [
+        "R1: System requests opt-in consent before loading any non-essential analytics tracking using an established consent platform (not hand-rolled)",
+        "R2: Refusing consent is as easy as accepting it (e.g., equivalent buttons)",
+        "R3: The user's choice is recorded and revocable at any time via a persistent control"
+      ],
+      "coverageComplete": true,
+      "slices": [
+        {
+          "title": "Integrate established consent platform UI",
+          "roleTag": "BARCAN-TAG-11",
+          "jtbd": "When implementing the consent manager for this epic, I want to integrate an established consent platform, so that tracking correctly respects user choice and legal compliance without rolling a custom banner.",
+          "acceptanceCriteria": "Given a new visitor, When they land on the site, Then the established consent platform's banner is shown and no non-essential scripts execute.\nGiven the consent banner, When the user clicks refuse, Then it is handled just as effortlessly as accept, and tracking remains disabled.\nGiven the persistent UI, When tested with a keyboard, Then it conforms to WCAG 2.1 AA.\nGiven the banner, When viewed on a mobile device, Then it is fully usable and fits within the viewport.",
+          "leanValue": "essential",
+          "cynefinDomain": "clear",
+          "tocConstraintRef": "Frontend tracking execution control",
+          "sixSigmaMetric": "Ensure 100% test coverage for the opt-in/opt-out script blocking logic",
+          "hasUi": true,
+          "requirementRefs": [
+            "R1",
+            "R2",
+            "R3"
+          ]
+        },
+        {
+          "title": "Verify consent management enforcement",
+          "roleTag": "BARCAN-TAG-06",
+          "jtbd": "When verifying the consent logic for this epic, I want to run network layer tests, so that we guarantee compliance with privacy regulations.",
+          "acceptanceCriteria": "Given a browser session without consent, When pages are navigated, Then network requests to analytics endpoints are confirmed to be absent.\nGiven a session where consent was revoked, When verified, Then tracking ceases immediately.",
+          "leanValue": "essential",
+          "cynefinDomain": "clear",
+          "tocConstraintRef": "Privacy violation prevention",
+          "sixSigmaMetric": "Achieve 0 leaked analytics requests in automated privacy verification tests",
+          "hasUi": false,
+          "requirementRefs": [
+            "R1",
+            "R2",
+            "R3"
+          ]
+        }
+      ]
+    },
+    {
+      "existingEpicId": null,
+      "title": "Data Subject Privacy Rights Fulfillment",
+      "jtbd": "When an editor requests their personal data, I want to provide export and erasure capabilities, so that the system complies with data subject access rights.",
+      "kanoClass": "Must-Be",
+      "cynefinDomain": "complicated",
+      "sixSigmaMetric": "Fulfill 100% of data subject requests within the one month statutory deadline",
+      "tocConstraintRef": "Data subject rights compliance",
+      "sourceIndex": 0,
+      "requirements": [
+        "R1: Editor can request and receive an export of their personal data",
+        "R2: Editor can request erasure of their account and personal data",
+        "R3: Erasure is executed while anonymizing author attribution to preserve material integrity without breaking relational constraints"
+      ],
+      "coverageComplete": true,
+      "slices": [
+        {
+          "title": "Define API contract for data subject rights",
+          "roleTag": "BARCAN-TAG-12",
+          "jtbd": "When implementing the privacy API contract for this epic, I want to specify export and erasure endpoints, so that parallel development is aligned.",
+          "acceptanceCriteria": "Given a data export request, When defined in the contract, Then the response is a structured JSON payload of the user's data.\nGiven an erasure request, When documented, Then the contract clearly defines the success status and side-effects.",
+          "leanValue": "essential",
+          "cynefinDomain": "clear",
+          "tocConstraintRef": "Privacy API synchronization",
+          "sixSigmaMetric": "Ensure 0 API contract ambiguities during integration of export/erasure flows",
+          "hasUi": false,
+          "requirementRefs": [
+            "R1",
+            "R2",
+            "R3"
+          ]
+        },
+        {
+          "title": "Implement privacy rights backend logic",
+          "roleTag": "BARCAN-TAG-02",
+          "jtbd": "When implementing the export and erasure for this epic, I want to extract data securely and anonymize records, so that compliance is fully automated.",
+          "acceptanceCriteria": "Given an export request, When processed, Then all personal data tied to the user is serialized into the payload.\nGiven an erasure request, When executed, Then the user's account is deleted and their authored materials are reassigned to an 'Anonymized Author' system record.",
+          "leanValue": "essential",
+          "cynefinDomain": "complicated",
+          "tocConstraintRef": "Data anonymization safety",
+          "sixSigmaMetric": "Achieve 0 orphan records or foreign key constraint violations during automated erasure tests",
+          "hasUi": false,
+          "requirementRefs": [
+            "R1",
+            "R2",
+            "R3"
+          ]
+        },
+        {
+          "title": "Implement privacy rights UI",
+          "roleTag": "BARCAN-TAG-11",
+          "jtbd": "When implementing the privacy settings UI for this epic, I want to provide clear controls for export and deletion, so that users can exercise their rights without friction.",
+          "acceptanceCriteria": "Given a request to delete an account, When the user clicks the button, Then a visible, explicit confirmation dialog must be acknowledged before the destructive action proceeds.\nGiven the privacy settings page, When accessed via keyboard, Then all elements have visible focus and meet WCAG 2.1 AA contrast requirements.\nGiven the privacy interface, When loaded on a mobile screen, Then all controls are legible and usable.",
+          "leanValue": "essential",
+          "cynefinDomain": "clear",
+          "tocConstraintRef": "User consent and confirmation friction",
+          "sixSigmaMetric": "Ensure 100% of destructive actions in this flow require a secondary confirmation click",
+          "hasUi": true,
+          "requirementRefs": [
+            "R1",
+            "R2",
+            "R3"
+          ]
+        },
+        {
+          "title": "Verify data subject rights flow",
+          "roleTag": "BARCAN-TAG-06",
+          "jtbd": "When verifying privacy compliance for this epic, I want to test export completeness and erasure safety, so that legal obligations are met without degrading system integrity.",
+          "acceptanceCriteria": "Given a test user with published materials, When an E2E test runs the erasure flow, Then the user is completely removed but the published materials remain intact and anonymized.\nGiven an export test, When the payload is inspected, Then it correctly contains all expected personal data fields.",
+          "leanValue": "essential",
+          "cynefinDomain": "complicated",
+          "tocConstraintRef": "Privacy logic correctness",
+          "sixSigmaMetric": "Achieve 100% passing automated tests for data anonymization and export integrity",
+          "hasUi": false,
+          "requirementRefs": [
+            "R1",
+            "R2",
+            "R3"
+          ]
+        }
+      ]
+    },
+    {
+      "existingEpicId": null,
+      "title": "Factory Acceptance Demonstration Content",
+      "jtbd": "When accepting the delivered product, I want to interact with a populated instance using real epidemiological data, so that I can verify all functional chains in a realistic context.",
+      "kanoClass": "Must-Be",
+      "cynefinDomain": "clear",
+      "sixSigmaMetric": "Ensure 100% of functional paths can be traversed using the initial seed data",
+      "tocConstraintRef": "Client acceptance testing",
+      "sourceIndex": 0,
+      "requirements": [
+        "R1: The deployed instance contains realistic epidemiological materials and protocols in Russian (the client's language)",
+        "R2: The instance includes pre-configured editor accounts and examples of stale content",
+        "R3: The instance is reachable by the client from outside the factory for acceptance testing"
+      ],
+      "coverageComplete": true,
+      "slices": [
+        {
+          "title": "Develop realistic epidemiological seed data",
+          "roleTag": "BARCAN-TAG-08",
+          "jtbd": "When implementing the seed scripts for this epic, I want to populate the database with authentic Russian material, so that the client sees a system ready for their domain.",
+          "acceptanceCriteria": "Given a fresh deployment, When the seed script runs, Then the database is populated with multiple valid materials, including both fresh and stale examples.\nGiven the pre-configured accounts, When inspected, Then they allow immediate login for the roles of editor and reader.",
+          "leanValue": "essential",
+          "cynefinDomain": "clear",
+          "tocConstraintRef": "Initial state realism",
+          "sixSigmaMetric": "Ensure 0 errors occur during the execution of the seed population script on a clean database",
+          "hasUi": false,
+          "requirementRefs": [
+            "R1",
+            "R2"
+          ]
+        },
+        {
+          "title": "Verify factory acceptance deployment",
+          "roleTag": "BARCAN-TAG-06",
+          "jtbd": "When verifying the acceptance instance for this epic, I want to perform a manual and automated traversal of core paths, so that the product is proven ready for handover.",
+          "acceptanceCriteria": "Given the deployed acceptance instance, When accessed via its external URL, Then it is reachable and responsive.\nGiven the seeded data, When the core paths (search, read, login, manage material) are traversed, Then they execute flawlessly.",
+          "leanValue": "essential",
+          "cynefinDomain": "clear",
+          "tocConstraintRef": "Deployment reachability and correctness",
+          "sixSigmaMetric": "Achieve 100% pass rate on the manual acceptance traversal checklist",
+          "hasUi": false,
+          "requirementRefs": [
+            "R1",
+            "R2",
+            "R3"
+          ]
+        }
+      ]
+    }
+  ]
+}
