@@ -1,0 +1,118 @@
+openapi: 3.0.3
+info:
+  title: Epidemiology Knowledge Base API
+  version: 1.0.0
+  description: Content management API for cataloging, searching, and managing epidemiological materials.
+servers:
+  - url: /api
+paths:
+  /content:
+    get:
+      summary: List content items
+      operationId: listContent
+      responses:
+        '200':
+          description: A list of content items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ContentItem'
+    post:
+      summary: Create a content item draft
+      operationId: createDraft
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContentItemDraftRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentItem'
+        '400':
+          description: Bad Request
+  /content/stats:
+    get:
+      summary: Fetch catalog statistics
+      operationId: getContentStats
+      responses:
+        '200':
+          description: Statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentStats'
+  /content/{id}/publish:
+    post:
+      summary: Publish drafted content
+      operationId: publishContent
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Published successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentItem'
+        '404':
+          description: Not Found
+        '409':
+          description: Conflict
+components:
+  schemas:
+    ContentItem:
+      type: object
+      required:
+        - id
+        - type
+        - status
+        - data
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+        status:
+          type: string
+        data:
+          type: object
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    ContentItemDraftRequest:
+      type: object
+      required:
+        - type
+        - data
+      properties:
+        type:
+          type: string
+        data:
+          type: object
+    ContentStats:
+      type: object
+      properties:
+        totalItems:
+          type: integer
+        publishedItems:
+          type: integer
+        draftItems:
+          type: integer
